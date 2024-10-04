@@ -21,7 +21,7 @@ class Profile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CircleAvatar(
-                    backgroundColor: Color.fromARGB(255, 193, 172, 88),
+                    backgroundColor: Color.fromARGB(255, 88, 186, 193),
                     child: Text('NA'),
                   ),
                   SizedBox(
