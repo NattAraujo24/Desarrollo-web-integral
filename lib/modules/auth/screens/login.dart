@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Login extends StatefulWidget {
-  const Login({
-    super.key,
-  });
+  const Login({super.key});
 
   @override
   State<Login> createState() => _LoginState();
@@ -32,10 +30,10 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Inicio de sesion'),
+        title: const Text("Iniciar Sesión"),
         centerTitle: true,
         backgroundColor: Colors.blue,
-        titleTextStyle: const TextStyle(fontSize: 16, color: Colors.white),
+        titleTextStyle: const TextStyle(fontSize: 20, color: Colors.white),
       ),
       body: Center(
         child: Padding(
@@ -46,7 +44,7 @@ class _LoginState extends State<Login> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  'assets/logo.png',
+                  "assets/logo.png",
                   width: 200,
                   height: 200,
                 ),
@@ -54,8 +52,8 @@ class _LoginState extends State<Login> {
                   validator: validateEmail,
                   controller: _emailController,
                   decoration: const InputDecoration(
-                    hintText: 'Correo Electrónico',
-                    label: Text('Correo Electrónico'),
+                    hintText: "Correo electronico",
+                    label: Text('Correo electronico'),
                   ),
                   keyboardType: TextInputType.emailAddress,
                 ),
@@ -63,21 +61,20 @@ class _LoginState extends State<Login> {
                   height: 16,
                 ),
                 TextFormField(
-                  obscureText: _isObscure,
                   controller: _passwordController,
+                  obscureText: _isObscure,
                   decoration: InputDecoration(
                     hintText: 'Contraseña',
                     label: const Text('Contraseña'),
-                    suffix: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _isObscure = !_isObscure;
-                        });
-                      },
-                      icon: Icon(
-                        _isObscure ? Icons.visibility : Icons.visibility_off,
-                      ),
-                    ),
+                    suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _isObscure = !_isObscure;
+                          });
+                        },
+                        icon: Icon(_isObscure
+                            ? Icons.visibility
+                            : Icons.visibility_off)),
                   ),
                 ),
                 const SizedBox(
@@ -88,17 +85,19 @@ class _LoginState extends State<Login> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      if(_formKey.currentState!.validate()){
+                      if (_formKey.currentState!.validate()) {
+                        // ignore: avoid_print
                         print(
-                        'Datos - > ${_emailController.text} ${_passwordController.text}')
+                            ' Datos -> ${_emailController.text} ${_passwordController.text}');
                       }
                     },
                     style: OutlinedButton.styleFrom(
                         backgroundColor: Colors.amber,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16))),
-                    child: const Text('Iniciar sesión'),
+                          borderRadius: BorderRadius.circular(16),
+                        )),
+                    child: const Text("Iniciar Sesion"),
                   ),
                 )
               ],
