@@ -1,43 +1,92 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating/flutter_rating.dart';
+import 'package:learning_b/modules/restaurant/entities/restaurant.dart';
+import 'package:learning_b/navigation/custom_list_restaurants.dart';
 
-class Home extends StatelessWidget {
-  const Home({super.key});
+class home extends StatefulWidget {
+  const home({super.key});
 
-  Future<void> _logout(BuildContext context) async {
-    try {
-      await FirebaseAuth.instance.signOut();
-      // Redirige al usuario a la pantalla de inicio de sesión.
-      Navigator.pushReplacementNamed(context, '/login');
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al cerrar sesión: $e')),
-      );
-    }
+  @override
+  State<home> createState() => _homeState();
+}
+
+final db = FirebaseFirestore.instance;
+
+class _homeState extends State<home> {
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
   }
+
+  bool _isLoading = true;
+  List<Restaurant> restaurants = [];
+
+
+Future<void> fetchData() async {
+  try {
+    // Escuchar los cambios en la colección
+    db.collection("restaurants").snapshots().listen(
+      (event) {
+        restaurants.clear();
+
+        for (var doc in event.docs) {
+          final data = doc.data() as Map<String, dynamic>;
+          final Restaurant restaurant = Restaurant(
+            data["name"],
+            data["description"],
+            List<String>.from(data["images"]),
+            (data["rating"] is double)
+                ? data["rating"]
+                : double.tryParse(data["rating"].toString()) ?? 0.0,
+            data["count"],
+          );
+          restaurants.add(restaurant);
+        }
+
+        if (mounted) {
+          setState(() {
+            _isLoading = false; 
+          });
+        }
+      },
+      onError: (error) {
+        print("Listen failed: $error");
+      },
+    );
+  } catch (e) {
+    print("Error al obtener datos: $e");
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Inicio'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () => _logout(context),
-          ),
-        ],
-      ),
-      body: const Center(
-        child: Text('Inicio'),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.pushNamed(context, '/top'),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        child: const Icon(Icons.home),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-    );
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Inicio'),
+        ),
+        body: ListView.builder(
+          padding: const EdgeInsets.all(8),
+          itemCount: restaurants.length,
+          itemBuilder: (context, index) {
+            final restaurant = restaurants[index];
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                color: Colors.blue[200],
+                child: CuscomListRestaurants(restaurant: restaurant),
+              ),
+            );
+          },
+        ),
+      );
+    }
   }
 }

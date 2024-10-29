@@ -7,12 +7,10 @@ import 'package:learning_b/navigation/navigation.dart';
 import 'package:learning_b/navigation/profile.dart';
 import 'package:learning_b/navigation/reservations.dart';
 import 'package:learning_b/navigation/top.dart';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-//flutter pub get
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -28,19 +26,13 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
-          brightness: Brightness.light,
-        ),
-      ),
       routes: {
         '/': (context) => const SplashScreen(),
         '/menu': (context) => const Navigation(),
-        '/home': (context) => const Home(),
-        '/top': (context) => const Top(),
-        '/reservations': (context) => const Reservations(),
+        '/home': (context) => const home(),
         '/profile': (context) => const Profile(),
+        '/reservations': (context) => const Reservations(),
+        '/top': (context) => const Top(),
         '/login': (context) => const Login(),
         '/register': (context) => const CreateAccount(),
       },
